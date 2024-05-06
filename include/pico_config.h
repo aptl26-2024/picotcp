@@ -6,6 +6,11 @@
 #include "pico_defines.h"
 #ifndef INCLUDE_PICO_CONFIG
 #define INCLUDE_PICO_CONFIG
+
+#ifndef __CHICKADEE__
+#define __CHICKADEE__
+#endif
+
 #ifndef __KERNEL__
 #include <stddef.h>
 #include <stdint.h>
@@ -228,6 +233,8 @@ static inline uint64_t long_long_be(uint64_t le)
 #elif defined __KERNEL__
 # include "arch/pico_linux.h"
 /* #elif defined ... */
+#elif defined __CHICKADEE__
+#include "arch/pico_chikadee.hh"
 #else
 # include "arch/pico_posix.h"
 #endif
