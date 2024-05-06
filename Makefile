@@ -3,6 +3,7 @@
 
 OS:=$(shell uname)
 CC:=$(CROSS_COMPILE)gcc
+CXX:=$(CROSS_COMPILE)g++
 LD:=$(CROSS_COMPILE)ld
 AR:=$(CROSS_COMPILE)ar
 RANLIB:=$(CROSS_COMPILE)ranlib
@@ -11,6 +12,7 @@ STRIP_BIN:=$(CROSS_COMPILE)strip
 TEST_LDFLAGS=-pthread  $(PREFIX)/modules/*.o $(PREFIX)/lib/*.o -lvdeplug
 UNIT_LDFLAGS=-lcheck -lm -pthread -lrt -lsubunit
 UNIT_CFLAGS= $(CFLAGS) -Wno-missing-braces
+
 
 LIBNAME:="libpicotcp.a"
 
@@ -91,6 +93,10 @@ EXTRA_CFLAGS+=-DPICO_COMPILE_TIME=`date +%s`
 EXTRA_CFLAGS+=$(PLATFORM_CFLAGS)
 
 CFLAGS=-I$(PREFIX)/include -Iinclude -Imodules  $(EXTRA_CFLAGS)
+
+# * mine
+CFLAGS+=-I$(PWD)/../..
+
 # options for adding warnings
 CFLAGS+= -Wall -W -Wextra -Wshadow -Wcast-qual -Wwrite-strings -Wundef -Wdeclaration-after-statement
 CFLAGS+= -Wconversion -Wcast-align -Wmissing-prototypes
