@@ -36,7 +36,7 @@ static const struct pico_ip4 ANY_HOST = {
 static uint32_t pico_aodv_local_id = 0;
 static int aodv_node_compare(void *ka, void *kb)
 {
-    struct pico_aodv_node *a = ka, *b = kb;
+    struct pico_aodv_node *a = (pico_aodv_node*) ka, *b = (pico_aodv_node*) kb;
     if (a->dest.ip4.addr < b->dest.ip4.addr)
         return -1;
 
@@ -48,7 +48,7 @@ static int aodv_node_compare(void *ka, void *kb)
 
 static int aodv_dev_cmp(void *ka, void *kb)
 {
-    struct pico_device *a = ka, *b = kb;
+    struct pico_device *a = (pico_device*) ka, *b = (pico_device*) kb;
     if (a->hash < b->hash)
         return -1;
 
@@ -67,7 +67,7 @@ static struct pico_aodv_node *get_node_by_addr(const union pico_address *addr)
 {
     struct pico_aodv_node search;
     memcpy(&search.dest, addr, sizeof(union pico_address));
-    return pico_tree_findKey(&aodv_nodes, &search);
+    return (pico_aodv_node*) pico_tree_findKey(&aodv_nodes, &search);
 
 }
 
@@ -106,7 +106,7 @@ static void aodv_elect_route(struct pico_aodv_node *node, union pico_address *gw
 
 static struct pico_aodv_node *aodv_peer_new(const union pico_address *addr)
 {
-    struct pico_aodv_node *node = PICO_ZALLOC(sizeof(struct pico_aodv_node));
+    struct pico_aodv_node *node = (pico_aodv_node*) PICO_ZALLOC(sizeof(struct pico_aodv_node));
     if (!node)
         return NULL;
 
@@ -176,7 +176,7 @@ static void aodv_forward(void *pkt, struct pico_msginfo *info, int reply)
         orig->fwd_time = now;
         info->dev = NULL;
         pico_tree_foreach(index, &aodv_devices){
-            dev = index->keyValue;
+            dev = (pico_device*) index->keyValue;
             pico_aodv_set_dev(dev);
             pico_socket_sendto_extended(aodv_socket, pkt, size, &all_bcast, short_be(PICO_AODV_PORT), info);
             pico_aodv_dbg("Forwarding %s: complete! ==== \n", reply ? "REPLY" : "REQUEST");
@@ -473,7 +473,7 @@ static void aodv_retrans_rreq(pico_time now, void *arg)
     static struct pico_aodv_rreq rreq;
     struct pico_ipv4_link *ip4l = NULL;
     struct pico_msginfo info = {
-        .dev = NULL, .tos = 0, .ttl = AODV_TTL_START
+        .dev = NULL, .ttl = AODV_TTL_START, .tos = 0
     };
     (void)now;
 
@@ -506,7 +506,7 @@ static void aodv_retrans_rreq(pico_time now, void *arg)
     aodv_make_rreq(node, &rreq);
     info.ttl = (uint8_t)node->ring_ttl;
     pico_tree_foreach(index, &aodv_devices){
-        dev = index->keyValue;
+        dev = (pico_device*) index->keyValue;
         pico_aodv_set_dev(dev);
         ip4l = pico_ipv4_link_by_dev(dev);
         if (ip4l) {
@@ -530,7 +530,7 @@ static int aodv_send_req(struct pico_aodv_node *node)
     int n = 0;
     struct pico_ipv4_link *ip4l = NULL;
     struct pico_msginfo info = {
-        .dev = NULL, .tos = 0, .ttl = AODV_TTL_START
+        .dev = NULL, .ttl = AODV_TTL_START, .tos = 0
     };
     memset(&rreq, 0, sizeof(rreq));
 
@@ -553,7 +553,7 @@ static int aodv_send_req(struct pico_aodv_node *node)
 
     aodv_make_rreq(node, &rreq);
     pico_tree_foreach(index, &aodv_devices) {
-        dev = index->keyValue;
+        dev = (pico_device*) index->keyValue;
         pico_aodv_set_dev(dev);
         ip4l = pico_ipv4_link_by_dev(dev);
         if (ip4l) {
@@ -587,7 +587,7 @@ static void pico_aodv_collector(pico_time now, void *arg)
     (void)arg;
     (void)now;
     pico_tree_foreach(index, &aodv_nodes){
-        node = index->keyValue;
+        node = (pico_aodv_node*)  index->keyValue;
         if (PICO_AODV_ACTIVE(node)) {
             uint32_t lifetime = aodv_lifetime(node);
             if (lifetime == 0)
@@ -618,7 +618,7 @@ MOCKABLE int pico_aodv_init(void)
     if (pico_socket_bind(aodv_socket, &any, &port) != 0) {
         uint16_t err = pico_err;
         pico_socket_close(aodv_socket);
-        pico_err = err;
+        pico_err = (pico_err_t) err;
         aodv_socket = NULL;
         return -1;
     }

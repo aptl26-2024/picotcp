@@ -121,7 +121,7 @@ struct pico_arp {
 
 static int arp_compare(void *ka, void *kb)
 {
-    struct pico_arp *a = ka, *b = kb;
+    struct pico_arp *a = (pico_arp*) ka, *b = (pico_arp*) kb;
     return pico_ipv4_compare(&a->ipv4, &b->ipv4);
 }
 
@@ -135,7 +135,7 @@ struct pico_eth *pico_arp_lookup(struct pico_ip4 *dst)
 {
     struct pico_arp search, *found;
     search.ipv4.addr = dst->addr;
-    found = pico_tree_findKey(&arp_tree, &search);
+    found = (pico_arp*) pico_tree_findKey(&arp_tree, &search);
     if (found && (found->arp_status != PICO_ARP_STATUS_STALE))
         return &found->eth;
 
@@ -147,7 +147,7 @@ struct pico_ip4 *pico_arp_reverse_lookup(struct pico_eth *dst)
     struct pico_arp*search;
     struct pico_tree_node *index;
     pico_tree_foreach(index, &arp_tree){
-        search = index->keyValue;
+        search = (pico_arp*) index->keyValue;
         if(memcmp(&(search->eth.addr), &dst->addr, 6) == 0)
             return &search->ipv4;
     }
@@ -292,7 +292,7 @@ static int pico_arp_add_entry(struct pico_arp *entry)
 
 int pico_arp_create_entry(uint8_t *hwaddr, struct pico_ip4 ipv4, struct pico_device *dev)
 {
-    struct pico_arp*arp = PICO_ZALLOC(sizeof(struct pico_arp));
+    struct pico_arp*arp = (pico_arp*) PICO_ZALLOC(sizeof(struct pico_arp));
     if(!arp) {
         pico_err = PICO_ERR_ENOMEM;
         return -1;
@@ -332,7 +332,7 @@ static struct pico_arp *pico_arp_lookup_entry(struct pico_frame *f)
     search.ipv4.addr = hdr->src.addr;
 
     /* Search for already existing entry */
-    found = pico_tree_findKey(&arp_tree, &search);
+    found = (pico_arp*) pico_tree_findKey(&arp_tree, &search);
     if (found) {
         if (found->arp_status == PICO_ARP_STATUS_STALE) {
             /* Replace if stale */
@@ -546,7 +546,7 @@ int pico_arp_get_neighbors(struct pico_device *dev, struct pico_ip4 *neighbors, 
     struct pico_tree_node *index;
     int i = 0;
     pico_tree_foreach(index, &arp_tree){
-        search = index->keyValue;
+        search = (pico_arp*) index->keyValue;
         if (search->dev == dev) {
             neighbors[i++].addr = search->ipv4.addr;
             if (i >= maxlen)

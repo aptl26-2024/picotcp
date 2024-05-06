@@ -13,6 +13,7 @@
 #include <pico_tftp.h>
 #include <pico_strings.h>
 
+
 #ifdef DEBUG_TFTP
 #define tftp_dbg dbg
 #else
@@ -356,7 +357,7 @@ static void tftp_send_ack(struct pico_tftp_session *session)
 {
     struct pico_tftp_data_hdr *dh;
 
-    dh = PICO_ZALLOC(sizeof(struct pico_tftp_data_hdr));
+    dh = (pico_tftp_data_hdr*) (PICO_ZALLOC(sizeof(struct pico_tftp_data_hdr)));
     if (!dh)
         return;
 
@@ -408,11 +409,12 @@ static void tftp_send_oack(struct pico_tftp_session *session)
     uint8_t *buf;
     char str_options[MAX_OPTIONS_SIZE] = {
         0
+
     };
 
     options_size = prepare_options_string(session, str_options, session->file_size);
 
-    buf = PICO_ZALLOC(options_pos + options_size);
+    buf = (uint8_t*) PICO_ZALLOC(options_pos + options_size);
     if (!buf) {
         strcpy((char *)session->tftp_block, "Out of memory");
         do_callback(session, PICO_TFTP_EV_ERR_LOCAL, session->tftp_block, 0);
@@ -451,7 +453,7 @@ static void tftp_send_req(struct pico_tftp_session *session, union pico_address 
     options_size = prepare_options_string(session, str_options, (opcode == PICO_TFTP_WRQ) ? (session->file_size) : (0));
 
     options_pos = sizeof(struct pico_tftp_hdr) + OCTET_STRSIZ + len;
-    buf = PICO_ZALLOC(options_pos + options_size);
+    buf = (uint8_t*) PICO_ZALLOC(options_pos + options_size);
     if (!buf) {
         strcpy((char *)session->tftp_block, "Out of memory");
         do_callback(session, PICO_TFTP_EV_ERR_LOCAL, session->tftp_block, 0);

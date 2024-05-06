@@ -93,11 +93,11 @@ static struct pico_frame *pico_ethernet_alloc(struct pico_protocol *self, struct
 struct pico_protocol pico_proto_ethernet = {
     .name = "ethernet",
     .layer = PICO_LAYER_DATALINK,
-    .alloc = pico_ethernet_alloc,
-    .process_in = pico_ethernet_process_in,
-    .process_out = pico_ethernet_process_out,
     .q_in = &ethernet_in,
     .q_out = &ethernet_out,
+    .alloc = pico_ethernet_alloc,
+    .process_out = pico_ethernet_process_out,
+    .process_in = pico_ethernet_process_in,
 };
 
 static int destination_is_bcast(struct pico_frame *f)

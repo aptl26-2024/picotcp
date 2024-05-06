@@ -1,0 +1,10 @@
+{
+    "files.associations": {
+        "string.h": "c",
+        "pico_defines.h": "c",
+        "pico_stack.h": "c",
+        "__locale": "c",
+        "__threading_support": "c",
+        "vector": "c"
+    }
+}

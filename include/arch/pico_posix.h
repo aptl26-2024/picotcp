@@ -50,7 +50,11 @@ static inline void pico_free(void *x)
     free(ptr);
 }
 #else
+#if __cplusplus
 #define pico_zalloc(x) calloc(x, 1)
+#else
+#define pico_zalloc(x) calloc(x, 1)
+#endif
 #define pico_free(x) free(x)
 #endif
 

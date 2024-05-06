@@ -270,7 +270,7 @@ static int pico_ipv4_mcast_filter(struct pico_frame *f);
 
 static int ipv4_link_compare(void *ka, void *kb)
 {
-    struct pico_ipv4_link *a = ka, *b = kb;
+    struct pico_ipv4_link *a = (pico_ipv4_link*) ka, *b = (pico_ipv4_link*) kb;
     int cmp = pico_ipv4_compare(&a->address, &b->address);
     if (cmp)
         return cmp;
@@ -526,7 +526,7 @@ struct pico_protocol pico_proto_ipv4 = {
 
 static int ipv4_route_compare(void *ka, void *kb)
 {
-    struct pico_ipv4_route *a = ka, *b = kb;
+    struct pico_ipv4_route *a = (pico_ipv4_route*) ka, *b = (pico_ipv4_route*) kb;
     uint32_t a_nm, b_nm;
     int cmp;
 
@@ -579,7 +579,7 @@ static struct pico_ipv4_route *route_find(const struct pico_ip4 *addr)
 
     if (addr->addr != PICO_IP4_BCAST) {
         pico_tree_foreach_reverse(index, &Routes) {
-            r = index->keyValue;
+            r = (pico_ipv4_route*) index->keyValue;
             if ((addr->addr & (r->netmask.addr)) == (r->dest.addr)) {
                 return r;
             }
@@ -677,13 +677,13 @@ struct pico_device *pico_ipv4_source_dev_find(const struct pico_ip4 *dst)
  */
 static int ipv4_mcast_groups_cmp(void *ka, void *kb)
 {
-    struct pico_mcast_group *a = ka, *b = kb;
+    struct pico_mcast_group *a = (pico_ipv4_route*) ka, *b = (pico_ipv4_route*) kb;
     return pico_ipv4_compare(&a->mcast_addr.ip4, &b->mcast_addr.ip4);
 }
 
 static int ipv4_mcast_sources_cmp(void *ka, void *kb)
 {
-    struct pico_ip4 *a = ka, *b = kb;
+    struct pico_ip4 *a = (pico_ipv4_route*) ka, *b = (pico_ipv4_route*) kb;
     return pico_ipv4_compare(a, b);
 }
 
@@ -702,10 +702,10 @@ static void pico_ipv4_mcast_print_groups(struct pico_ipv4_link *mcast_link)
     ip_mcast_dbg("+---------------------------------------------------------------------------------+\n");
 
     pico_tree_foreach(index, mcast_link->MCASTGroups) {
-        g = index->keyValue;
+        g = (pico_ipv4_route*) index->keyValue;
         ip_mcast_dbg("+ %04d | %16s |  %08X  |      %05u      |      %u      | %8s +\n", i, mcast_link->dev->name, g->mcast_addr.ip4.addr, g->reference_count, g->filter_mode, "");
         pico_tree_foreach(index2, &g->MCASTSources) {
-            source = index2->keyValue;
+            source = (pico_ip4*) index2->keyValue;
             ip_mcast_dbg("+ %4s | %16s |  %8s  |      %5s      |      %s      | %08X +\n", "", "", "", "", "", source->addr);
         }
         i++;
@@ -719,7 +719,7 @@ static int mcast_group_update(struct pico_mcast_group *g, struct pico_tree *MCAS
     struct pico_ip4 *source = NULL;
     /* cleanup filter */
     pico_tree_foreach_safe(index, &g->MCASTSources, _tmp) {
-        source = index->keyValue;
+        source = (pico_ip4*) index->keyValue;
         pico_tree_delete(&g->MCASTSources, source);
         PICO_FREE(source);
     }
@@ -727,7 +727,7 @@ static int mcast_group_update(struct pico_mcast_group *g, struct pico_tree *MCAS
     if (MCASTFilter) {
         pico_tree_foreach(index, MCASTFilter) {
             if (index->keyValue) {
-                source = PICO_ZALLOC(sizeof(struct pico_ip4));
+                source = (pico_ip4*) PICO_ZALLOC(sizeof(struct pico_ip4));
                 if (!source) {
                     pico_err = PICO_ERR_ENOMEM;
                     return -1;
