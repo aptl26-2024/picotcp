@@ -1,6 +1,7 @@
 #include <stdint.h>
 #include <stdio.h>
-#include <stdlib.h>
+// #include <stdlib.h>
+#include <lib.hh>
 #include "pico_faulty.h"
 
 /* #warning "COMPILING for MEMORY TESTS!" */

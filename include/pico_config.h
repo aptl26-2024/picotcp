@@ -14,8 +14,9 @@
 #ifndef __KERNEL__
 #include <stddef.h>
 #include <stdint.h>
-#include <stdlib.h>
-#include <string.h>
+// #include <stdlib.h>
+// #include <string.h>
+#include <lib.hh>
 #else
 #include <linux/types.h>
 #endif

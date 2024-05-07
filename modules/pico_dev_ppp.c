@@ -8,8 +8,9 @@
 
 
 #include <stdint.h>
-#include <stdlib.h>
-#include <string.h>
+// #include <stdlib.h>
+// #include <string.h>
+#include <lib.hh>
 #include <stdio.h>
 
 #include "pico_device.h"

@@ -1,5 +1,6 @@
-#include <stdlib.h>
-#include <string.h>
+// #include <stdlib.h>
+// #include <string.h>
+#include <lib.hh>
 #include <stdint.h>
 #include "pico_ipv6.h"
 #include "pico_stack.h"

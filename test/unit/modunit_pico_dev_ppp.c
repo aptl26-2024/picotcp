@@ -1,6 +1,7 @@
 #include <stdint.h>
-#include <stdlib.h>
-#include <string.h>
+// #include <stdlib.h>
+// #include <string.h>
+#include <lib.hh>
 #include "pico_device.h"
 #include "pico_dev_ppp.h"
 #include "pico_stack.h"

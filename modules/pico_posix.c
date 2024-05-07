@@ -2,7 +2,7 @@
    PicoTCP. Copyright (c) 2012-2017 Altran Intelligent Systems. Some rights reserved.
    See COPYING, LICENSE.GPLv2 and LICENSE.GPLv3 for usage.
 
-   Authors: Andrei Carp, Maarten Vandersteegen
+   Authors: Andrei dbrp, Maarten Vandersteegen
  *********************************************************************/
 
 #ifdef PICO_SUPPORT_THREADING

@@ -1,6 +1,7 @@
 -include ../../config.mk
 -include ../../tools/kconfig/.config
 
+
 OS:=$(shell uname)
 CC:=$(CROSS_COMPILE)gcc
 CXX:=$(CROSS_COMPILE)g++
@@ -17,7 +18,7 @@ UNIT_CFLAGS= $(CFLAGS) -Wno-missing-braces
 LIBNAME:="libpicotcp.a"
 
 PREFIX?=$(PWD)/build
-DEBUG?=1
+DEBUG?=0
 PROFILE?=0
 PERF?=0
 ENDIAN?=little
@@ -92,10 +93,16 @@ endif
 EXTRA_CFLAGS+=-DPICO_COMPILE_TIME=`date +%s`
 EXTRA_CFLAGS+=$(PLATFORM_CFLAGS)
 
-CFLAGS=-I$(PREFIX)/include -Iinclude -Imodules  $(EXTRA_CFLAGS)
+# CFLAGS =-I$(PREFIX)/include -Iinclude -Imodules  $(EXTRA_CFLAGS)
+CFLAGS =-I$(PREFIX)/include -Iinclude -Imodules  $(EXTRA_CFLAGS) -fno-stack-protector
 
 # * mine
-CFLAGS+=-I$(PWD)/../..
+CFLAGS+=-I$(PWD)/../.. -mcmodel=large
+
+CFLAGS += -m64 -mno-mmx -mno-sse -mno-sse2 -mno-sse3 \
+       -mno-3dnow -ffreestanding -fno-omit-frame-pointer -fno-pic \
+       -fno-stack-protector \
+       -Wall -W -Wshadow -Wno-format -Wno-unused-parameter -std=gnu2x -gdwarf-4
 
 # options for adding warnings
 CFLAGS+= -Wall -W -Wextra -Wshadow -Wcast-qual -Wwrite-strings -Wundef -Wdeclaration-after-statement

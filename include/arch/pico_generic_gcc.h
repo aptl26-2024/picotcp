@@ -7,8 +7,9 @@
 #define _INCLUDE_PICO_GCC
 
 #include <stdint.h>
-#include <stdlib.h>
-#include <string.h>
+// #include <stdlib.h>
+// #include <string.h>
+#include <lib.hh>
 #include "pico_constants.h"
 
 /* #define TIME_PRESCALE */

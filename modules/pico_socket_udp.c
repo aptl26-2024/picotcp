@@ -1,3 +1,6 @@
+#ifdef __cplusplus
+extern "C" {
+#endif
 #include "pico_config.h"
 #include "pico_socket.h"
 #include "pico_udp.h"
@@ -258,3 +261,7 @@ int pico_getsockopt_udp(struct pico_socket *s, int option, void *value)
 #endif
 }
 
+
+#ifdef __cplusplus
+}
+#endif

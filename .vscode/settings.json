@@ -1,5 +1,6 @@
 {
     "files.associations": {
-        "pico_chickadee.h": "c"
+        "pico_chickadee.h": "c",
+        "pico_faulty.h": "c"
     }
 }

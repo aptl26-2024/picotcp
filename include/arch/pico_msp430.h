@@ -7,8 +7,9 @@
 #define _INCLUDE_PICO_LPC
 
 #include <stdint.h>
-#include <stdlib.h>
-#include <string.h>
+// #include <stdlib.h>
+// #include <string.h>
+#include <lib.hh>
 #include "pico_constants.h"
 
 extern pico_time msp430_time_s(void);

@@ -9,6 +9,8 @@
 
 #include <ctype.h>
 #include <stdlib.h>
+// #include <string.h>
+#include <lib.hh>
 #include "pico_strings.h"
 
 char *get_string_terminator_position(char *const block, size_t len)
